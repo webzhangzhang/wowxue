@@ -1,0 +1,13 @@
+{
+    "port": 8866,
+    "target": "http://test-fenxi.haofenshu.com",
+    "targetMod": "http://testfx-mod.haofenshu.com",
+    "targetObt": "http://testfx-obt.haofenshu.com",
+    "targetExcel": "http://testfx-pdf.haofenshu.com",
+    "targetTaskServer": "http://testfx-task.haofenshu.com",
+    "targetTool": "http://testfx-tool-api.haofenshu.com",
+    "targetPri": "http://testfx-pri.haofenshu.com",
+	"cors": [
+        "*"
+    ]
+}

@@ -1,0 +1,14 @@
+{
+    "port": 9501,
+    "target": "http://testfx-beta.haofenshu.com",
+    "targetMod": "http://testfx-beta.haofenshu.com",
+    "targetObt": "http://testfx-beta.haofenshu.com",
+    "targetExcel": "http://testfx-beta.haofenshu.com",
+    "targetTaskServer": "http://testfx-beta.haofenshu.com",
+    "targetTool": "http:/testfx-beta.haofenshu.com",
+    "targetPri": "http://testfx-pri.haofenshu.com",
+    "cors": [
+        "http://testfx-beta.haofenshu.com",
+        "https://testfx-beta.haofenshu.com"
+    ]
+}

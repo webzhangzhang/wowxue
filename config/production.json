@@ -1,0 +1,13 @@
+{
+  "port": 9020,
+  "target": "http://fenxi.haofenshu.com",
+  "targetMod": "http://fx-mod.haofenshu.com",
+  "targetObt": "http://fx-obt.haofenshu.com",
+  "targetExcel": "http://fx-pdf.haofenshu.com",
+  "targetTaskServer": "http://fx-task.haofenshu.com",
+  "targetTool": "http://fx-tool-api.haofenshu.com",
+  "targetPri": "http://fx-pri.haofenshu.com",
+  "cors": [
+    "http://fenxi.haofenshu.com", "https://fenxi.haofenshu.com"
+  ]
+}

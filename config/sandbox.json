@@ -1,0 +1,13 @@
+{
+    "port": 9001,
+    "target": "http://sandboxfenxi.haofenshu.com",
+    "targetMod": "http://sandboxfenxi.haofenshu.com",
+    "targetObt": "http://sandboxfenxi.haofenshu.com",
+    "targetExcel": "http://sandboxfenxi.haofenshu.com",
+    "targetTaskServer": "http://sandboxfenxi.haofenshu.com",
+    "targetTool": "http://sandboxfenxi.haofenshu.com",
+    "targetPri": "http://sandboxfenxi.haofenshu.com",
+    "cors": [
+        "http://sandboxfenxi.haofenshu.com", "https://sandboxfenxi.haofenshu.com"
+    ]
+}

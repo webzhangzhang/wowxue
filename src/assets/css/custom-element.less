@@ -1,0 +1,147 @@
+    .el-table .good-column {
+        background-color: #e3f0f9;
+    }
+
+    .el-table .weak-column {
+        background-color: #fdefed;
+    }
+
+    .popper-tips-style {
+        font-size: 12px;
+        margin: 0;
+        padding: 5px;
+    }
+
+    .popper-desc-style {
+        width: 300px;
+        line-height: 20px;
+    }
+
+    .button-hover {
+        display: block;
+        margin: 0 auto;
+
+        &:hover {
+            color: #67C23A;
+        }
+    }
+    .el-radio-group{
+        margin-right: 20px;
+    }
+
+    .cell-style {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        color: #000;
+    }
+
+    .hack-exam-radio {
+        .el-radio {
+            display: block;
+            margin: 10px 0;
+        }
+    }
+
+    .el-dialog {
+        .el-dialog__body {
+            padding: 10px 20px;
+        }
+    }
+
+    .el-table {
+        color: #000;
+
+        .el-table__footer {
+            tbody {
+                td {
+                    background-color: #fff;
+                }
+            }
+        }
+    }
+
+    .el-radio-group {
+        .el-radio-button {
+            line-height: 45px;
+
+            &:first-child .el-radio-button__inner {
+                border-left: none;
+            }
+
+            .el-radio-button__inner {
+                padding: 8px 15px;
+                border-radius: 3px;
+                border: 0;
+                max-width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+    }
+
+    .fx-checkbox-group {
+        .el-checkbox-group {
+            .el-checkbox {
+                margin-left: 0;
+                margin-right: 20px;
+                width: 150px;
+            }
+        }
+    }
+
+    .params-checkbox {
+        .el-checkbox__label {
+            padding-left: 5px;
+        }
+    }
+
+    //表单验证
+    .is-success {
+        .el-input {
+            .el-input__inner {
+                border-color: #DCDFE6;
+
+                &:focus {
+                    border-color: #409EFF;
+                }
+            }
+        }
+    }
+
+    //去除表格fixed列的阴影效果
+    .el-table__fixed-right, .el-table__fixed {
+        box-shadow: none;
+    }
+
+    .el-radio-button:focus:not(.is-focus):not(:active):not(.is-disabled) {
+        box-shadow: none;
+    }
+
+    //阅卷痕迹
+    #switch {
+        .el-radio-button .el-radio-button__inner {
+            border: 1px solid #b3d8ff;
+            color: #409eff;
+            background: #ecf5ff;
+        }
+        .el-radio-button__orig-radio:checked + .el-radio-button__inner{
+            color: #FFF;
+            background-color: #409EFF;
+            border-color: #409EFF;
+            -webkit-box-shadow: -1px 0 0 0 #409EFF;
+            box-shadow: -1px 0 0 0 #409EFF;
+        }
+    }
+
+    .el-collapse{
+        border: 0;
+    }
+
+
