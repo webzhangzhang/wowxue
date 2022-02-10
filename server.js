@@ -8,7 +8,6 @@ const app = express()
 
 // 设置跨域
 app.all('*', (req, res, next) => {
-    console.log('------in')
     const origin = req.headers['origin']
     const CORS = config.get('cors')
     if (CORS.includes(origin) || CORS.includes('*')) {

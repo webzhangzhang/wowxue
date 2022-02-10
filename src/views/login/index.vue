@@ -2,15 +2,13 @@
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
       <div class="title-container">
-        <h3 class="title">机构管理系统111</h3>
+        <h3 class="title">机构管理系统</h3>
       </div>
       <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
         <el-input
           ref="username"
           v-model="loginForm.mobile"
+          prefix-icon="el-icon-user"
           placeholder="手机号"
           name="mobile"
           type="text"
@@ -18,14 +16,11 @@
           autocomplete="on"
         />
       </el-form-item>
-
       <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
         <el-form-item prop="password">
-          <span class="svg-container">
-            <svg-icon icon-class="password" />
-          </span>
           <el-input
             :key="passwordType"
+            prefix-icon="el-icon-lock"
             ref="password"
             v-model="loginForm.password"
             :type="passwordType"
@@ -37,9 +32,6 @@
             @blur="capsTooltip = false"
             @keyup.enter.native="handleLogin"
           />
-          <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-          </span>
         </el-form-item>
       </el-tooltip>
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
@@ -133,11 +125,10 @@ export default {
       })
     },
     handleLogin() {
-
       this.$refs.loginForm.validate(valid => {
         if (valid) {
+          console.log(123)
           this.loading = true
-
           this.$store.dispatch('user/login', this.loginForm)
             .then((res) => {
               console.log(res)
@@ -185,4 +176,46 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.login-container {
+  background-color: #2d3a4b;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .login-form {
+    width: 520px;
+    max-width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  .title {
+    font-size: 26px;
+    color: #eee;
+    margin: 0 auto 40px auto;
+    text-align: center;
+    font-weight: 700;
+  }
+}
+.login-container /deep/ .el-input input {
+    background: transparent;
+    border-radius: 5px;
+    padding: 12px 5px 12px 30px;
+    color: #fff;
+    height: 47px;
+    caret-color: #fff;
+}
+/deep/ .el-button {
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+.login-container /deep/ .el-form-item {
+  border: 1px solid hsla(0,0%,100%,.1);
+  background: rgba(0,0,0,.1);
+  border-radius: 5px;
+  color: #2d3a4b;
+}
+/deep/ .el-icon-user {
+  color: #fff;
+}
 </style>

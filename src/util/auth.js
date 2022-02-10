@@ -1,23 +1,19 @@
 import Cookies from 'js-cookie'
 
 // const TokenKey = 'Admin-Token'
-const TokenKey = 'fxtoken'
 const TokenAuthorizationKey = 'authorization'
 
 export function getToken() {
-  return Cookies.get(TokenKey)
+  return Cookies.get()
 }
 
-export function setToken(token) {
-  return Cookies.set(TokenKey, token)
-}
 
 export function setAuthorizationToken(token) {
   return Cookies.set(TokenAuthorizationKey, token)
 }
 
 export function removeToken() {
-  return Cookies.remove(TokenKey)
+  return Cookies.remove()
 }
 
 export function actionAccount() {

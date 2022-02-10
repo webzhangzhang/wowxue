@@ -32,7 +32,9 @@
   
 </template>
 <script>
-
+import {
+  CatelogList
+} from '@/api/activationCode'
 
 export default {
   name: 'Eltree',
@@ -95,20 +97,16 @@ export default {
       // })
     },
     getCategory(){
-      // let Data = {
-      //   page: 1,
-      //   limit: 1000,
-      //   key: '',
-      // }
-      // CatelogList(Data).then(res => {
-           
-      //   if (res.code == 200) {
-      //     this.dataSource = res.data
-
-      //   } else {
-      //     this.$message.error(res.message)
-      //   }
-      // })
+      let Data = {
+        page: 1,
+        limit: 1000
+      }
+      CatelogList(Data).then(res => {
+        console.log(res, '----')
+        if (res.code == 200) {
+          this.dataSource = res.data
+        }
+      })
     },
     getKnowledge(){
       // let Data = {

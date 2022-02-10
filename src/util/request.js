@@ -18,12 +18,12 @@ service.interceptors.request.use(
     } else {
       console.log(`${paths[1]} 对应的转发 HOST 未设置，请在 feConfig 目录下设置`)
     }
-
-    toPath = [].concat([''], paths).join('/')
+    toPath = [].concat([], paths).join('/')
 
     // 修改config.url为拼接好的 host + path
     config.url = baseAPI + toPath
-    config.headers['fxToken'] = getToken()
+    console.log(getToken, 'token------')
+    config.headers['authorization'] = getToken
     return config
   },
   error => {
@@ -35,7 +35,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data
-    if (res.code === 0) {
+    if (res.StatusCode === '200') {
       return res
     } else {
       return Promise.reject(res || 'Error')

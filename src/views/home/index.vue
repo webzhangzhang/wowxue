@@ -2,8 +2,11 @@
   <div class="login-container">
     <el-container>
       <el-aside width="200px">
+        <div class="asd-header">绘本管理系统</div>
         <el-menu
           default-active="1"
+          background-color="#304156"
+          text-color="#fff"
           class="el-menu-vertical-demo"
           @open="handleOpen"
           @close="handleClose">
@@ -14,7 +17,14 @@
         </el-menu>
       </el-aside>
       <el-container>
-        <el-header>Header</el-header>
+        <el-header class="header">
+          <div class="header-right">
+            <div>
+              name
+            </div>
+            <i class="el-icon-caret-bottom"></i>
+          </div>
+        </el-header>
         <el-main>
           <router-view />
         </el-main>
@@ -169,6 +179,28 @@ export default {
 <style lang="less" scoped>
     /deep/ .el-aside {
         height: 100vh;
-        background-color: #fff;
+        background-color: #304156;
+    }
+    .header {
+      background-color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: right;
+      border-bottom: 1px solid #ccc;
+      .header-right {
+        display: flex;
+        align-items: center;
+        justify-content: right;
+        width: 200px;
+        height: 100%;
+      }
+    }
+    .asd-header {
+      height: 50px;
+      background-color: #2b2f3a;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 </style>

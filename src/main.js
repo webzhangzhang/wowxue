@@ -5,12 +5,17 @@ import router from './router/index.js'
 import Components from './components'
 import store from './store/index'
 import Lib from './lib'
+import moment from 'moment'//导入文件
+
+
 
 Vue.config.productionTip = false
 // 埋点指令注册
 Vue.use(Lib)
 Vue.use(Components)
 Vue.use(Element, { size: 'mini' })
+Vue.prototype.$moment = moment//赋值使用
+moment.locale('zh-cn')//需要汉化
 Vue.prototype.bus = new Vue()
 
 if (typeof window !== 'undefined') {
