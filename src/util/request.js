@@ -1,29 +1,33 @@
 import axios from 'axios'
+import { MessageBox, Message } from 'element-ui'
+import store from '@/store'
 import { getToken } from '@/util/auth'
+import Cookies from 'js-cookie'
+
+// create an axios instance
 const service = axios.create({
-  timeout: 5 * 60000,
-  "Content-Type": "application/json"
+  baseURL:'http://magicstory.wowxue.com',
+  //baseURL:'//apicenter.wowxue.com',
+  //baseURL:'http://localhost:5080',
+  // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
+  // withCredentials: true, // send cookies when cross-domain requests
+  timeout: 1000 * 10, // request timeout
+  headers: {
+    'Content-Type': 'application/json;charset=UTF-8'
+  }
 })
-// 请求前 设置请求头
+// axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8'
+
+// request interceptor
 service.interceptors.request.use(
   config => {
-    let baseAPI = ''
-    let toPath = ''
-    const paths = config.url.split('/')
-    // feConfig 为 webpack定义的全局变量，查询对应环境的name
-    const rpc = feConfig.apiConfig.target
-    // 如果查询出name，获取host ，反之错误提醒
-    if (rpc) {
-      baseAPI = rpc 
-    } else {
-      console.log(`${paths[1]} 对应的转发 HOST 未设置，请在 feConfig 目录下设置`)
+    // do something before request is sent
+    if (store.getters.token) {
+      config.headers['Authorization'] = getToken()
     }
-    toPath = [].concat([], paths).join('/')
-
-    // 修改config.url为拼接好的 host + path
-    config.url = baseAPI + toPath
-    console.log(getToken, 'token------')
-    config.headers['authorization'] = getToken
+    // if (config.method === 'post') {
+    //       config.data = qs.stringify(config.data)
+    // }
     return config
   },
   error => {
@@ -31,18 +35,57 @@ service.interceptors.request.use(
   }
 )
 
-//请求后
+// response interceptor
 service.interceptors.response.use(
-  response => {
+  function(response) {
     const res = response.data
-    if (res.StatusCode === '200') {
-      return res
+    if (res.StatusCode !== '200') {
+      Message({
+        message: res.message || 'Error',
+        type: 'error',
+        duration: 5 * 1000
+      })
+      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
+      if (res.StatusCode === 50008 || res.StatusCode === 50012 || res.StatusCode === 50014) {
+        // to re-login
+        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
+          confirmButtonText: 'Re-Login',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+          store.dispatch('user/resetToken').then(() => {
+            location.reload()
+          })
+        })
+      }
+      console.error('res.StatusCode = ' + res.StatusCode)
+      if (res.StatusCode == 401) {
+        Message({
+          message: res.message || 'Error',
+          type: 'error'
+        })
+                
+        // store.dispatch('user/logout').then(() => {
+        location.reload()
+        Cookies.remove("Admin-Token")
+        return false
+        //  })
+      }
+      return Promise.reject(new Error(res.message || 'Error'))
     } else {
-      return Promise.reject(res || 'Error')
+      return res
     }
   },
-  errorResponse => {
-    return Promise.reject(errorResponse)
-  })
+  function(error) {
+    // error => {
+    console.error('err' + error) // for debug
+    // Message({
+    //     message: error.message,
+    //     type: 'error',
+    //     duration: 5 * 1000
+    // })
+    return Promise.reject(error)
+  }
+)
 
 export default service

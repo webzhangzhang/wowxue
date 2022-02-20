@@ -127,13 +127,15 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          console.log(123)
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm)
-            .then((res) => {
-              console.log(res)
-              // this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-              this.$router.push({ path:"/"})
+          let data = {
+            loginName: this.loginForm.mobile,
+            loginPassword: this.loginForm.password
+          }
+          this.$store.dispatch('user/login', data)
+            .then(() => {
+              console.log(this.$store.state, 'SET_TOKEN')
+              this.$router.push({ path:"/activationCode"})
               this.loading = false
             })
             .catch(() => {

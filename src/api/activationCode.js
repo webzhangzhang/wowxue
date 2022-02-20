@@ -48,15 +48,6 @@ export function activationBatchAdd(data) {
     data
   })
 }
-// fixli 生成目录
-// 生成激活码
-export function postcate(data) {
-  return request({
-    url: '/api/CatalogClassification/Add',
-    method: 'post',
-    data
-  })
-}
 // 获取激活码列表
 export function getActivationCodeList(params) {
   return request({
@@ -82,13 +73,13 @@ export function activationCodeDisable(data) {
   })
 }
 // 激活码导出
-export function activationCodeExport(activityId) {
-  window.open('http://magicstory.wowxue.com/api/ActivationCode/Export?activityId=' + activityId, '_self')
-  // return request({
-  //   url: '/api/ActivationCode/Export',
-  //   method: 'post',
-  //   data,
-  // })
+export function activationCodeExport(params) {
+  // window.open('http://magicstory.wowxue.com/api/ActivationCode/Export?activityId=' + activityId, '_self')
+  return request({
+    url: '/api/ActivationCode/Export',
+    method: 'get',
+    params
+  })
 }
 
 // 即需要传params，又要传data的 post

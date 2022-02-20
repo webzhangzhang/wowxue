@@ -58,7 +58,7 @@ export default {
       checkStrictly: false,
       dataProps: {
         children: 'Children',
-        label: 'Name',
+        label: 'CatalogName',
         id: 'Id',
       }
     }
@@ -83,7 +83,6 @@ export default {
     } else{
       console.log('err')
     }
-
   },
   methods: {
     getFenlei(){
@@ -103,8 +102,8 @@ export default {
       }
       CatelogList(Data).then(res => {
         console.log(res, '----')
-        if (res.code == 200) {
-          this.dataSource = res.data
+        if (res.StatusCode === '200') {
+          this.dataSource = res.Data
         }
       })
     },
@@ -125,20 +124,19 @@ export default {
       // })
     },
     getCheckedKeys() {
-      
       var names=[]
       var getCheckedNodes = this.$refs.tree.getCheckedNodes()
       for(var i in getCheckedNodes){
-        names.push(getCheckedNodes[i].Name)
+        names.push(getCheckedNodes[i].CatalogName)
       }
        
-      // var checks= this.$refs.tree.getCheckedKeys()
-      // var data={
-      //   type:this.showtype,
-      //   checks:checks,
-      //   names:names,
-      // }
-      // this.$emit('checksSave', data)
+      var checks= this.$refs.tree.getCheckedKeys()
+      var data={
+        type:this.showtype,
+        checks:checks,
+        names:names,
+      }
+      this.$emit('checksSave', data)
     },
     setCheckedKeys() {
        

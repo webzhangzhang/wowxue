@@ -1,25 +1,15 @@
 import Cookies from 'js-cookie'
 
-// const TokenKey = 'Admin-Token'
-const TokenAuthorizationKey = 'authorization'
+const TokenKey = 'Admin-Token'
 
 export function getToken() {
-  return Cookies.get()
+  return Cookies.get(TokenKey)
 }
 
-
-export function setAuthorizationToken(token) {
-  return Cookies.set(TokenAuthorizationKey, token)
+export function setToken(token) {
+  return Cookies.set(TokenKey, token)
 }
 
 export function removeToken() {
-  return Cookies.remove()
-}
-
-export function actionAccount() {
-  const accountArr = ['18791admin']
-  const userString = localStorage.getItem('user')
-  const user = JSON.parse(userString)
-  const account = user.name
-  return accountArr.includes(account)
+  return Cookies.remove(TokenKey)
 }

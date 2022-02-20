@@ -1,7 +1,6 @@
 <template>
   <div>
     <el-button type="primary" icon="el-icon-circle-plus-outline" @click="dialogFormVisible = true">生成激活码</el-button>
-    <el-button type="primary" icon="el-icon-circle-plus-outline" @click="postcarget">生成目录</el-button>
     <!-- 激活码批次列表 -->
     <el-table
       :data="tableData"
@@ -51,7 +50,7 @@
         width="300">
         <template slot-scope="scope">
           <div>
-            {{ scope.row.remark ? scope.row.remark : '-' }}
+            {{ scope.row.Remark ? scope.row.Remark : '-' }}
           </div>
         </template>
       </el-table-column>
@@ -90,14 +89,20 @@
             end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="对应权限" :label-width="formLabelWidth">
+        <el-form-item label="对应权限" :label-width="formLabelWidth" class="cata">
           <el-button @click="CatelogDialog=true">选择目录</el-button>
+          <div v-if="cateNameShow">
+            <span v-for="item in catalogNames" :key="item.id" class="cataName">{{ item.name }}</span>
+          </div>
         </el-form-item>
         <el-form-item label="使用有效期" :label-width="formLabelWidth">
-          <el-input class="usetime" v-model="form.validDays" autocomplete="off" width="100px"></el-input>
+          <div class="use">
+            <el-input class="usetime" v-model="form.validDays" autocomplete="off" width="100px"></el-input>
+            <span class="usetimetip">使用有效期不得超过三年</span>
+          </div>
         </el-form-item>
         <el-form-item label="数量" :label-width="formLabelWidth">
-          <el-input class="usetime" v-model="form.CodeCount" autocomplete="off"></el-input>
+          <el-input class="usetime" v-model="form.codeCount" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="备注" :label-width="formLabelWidth">
           <el-input v-model="form.remark" autocomplete="off"></el-input>
@@ -151,14 +156,14 @@ import elTree from '@/components/treeElement'
 // moment.locale('zh-cn')
 import {
   getActivationBatchList,
+  activationCodeExport,
   getActivationCodeList,
   activationCodeEnable,
   activationCodeDisable,
   deleteActivationBatch,
   activationBatchEnable,
   activationBatchDisable,
-  activationBatchAdd,
-  postcate
+  activationBatchAdd
 } from '@/api/activationCode'
 export default {
   name: 'Home',
@@ -166,6 +171,7 @@ export default {
   data() {
     return {
       isShow: true,
+      cateNameShow: false, // 选择的目录名称是否显示，有则显示，没有则隐藏
       dialogFormVisible: false, // 生成激活码弹窗
       dialogLookVisible: false, // 查看列表弹窗
       activationCodeList: [{ // 查看列表
@@ -199,6 +205,7 @@ export default {
         catalogNames: '', // fixli 暂时不知道如何使用
         remark: ''
       },
+      catalogNames: [], // 选择目录的数组
       treeData: [{
         id: 1,
         label: '一级 1',
@@ -241,30 +248,31 @@ export default {
     this.getActivationBatch()
   },
   methods:{
-    // 生成目录 fixli
-    postcarget() {
-      let data = {
-        catalogName: '语文',
-        parentId: 1
-      }
-      postcate(data)
-    },
     // 生成激活码
     activationAdd() {
+      let names = ''
+      this.catalogNames.forEach((item, index) => {
+        if (index !== 0) {
+          names = names + ',' + item.name
+        } else {
+          names = item.name
+        }
+      })
       let data = {
         batchName: this.form.batchName,
         startDate: moment(this.value1[0]).utc().format(),
         endDate: moment(this.value1[1]).utc().format(),
         validDays: +this.form.validDays,
         codeCount: +this.form.codeCount,
-        // catalogIds: "string",
-        // catalogNames: "string",
+        catalogIds: this.form.catalogIds,
+        catalogNames: names,
         remark: this.form.remark
       }
-      console.log(data)
       activationBatchAdd(data).then(res => {
-        console.log(res)
+        console.log(res, 'tessss')
         this.$message.success('添加成功')
+        this.dialogFormVisible = false
+        this.getActivationBatch()
       })
     },
     // 获取激活码批次
@@ -342,30 +350,38 @@ export default {
     },
     // 导出
     exportExcel(id) {
-      // let data = { batchId: id}
-      var aEle = document.createElement("a")// 创建a标签
-      aEle.download = 'a.txt'// 设置下载文件的文件名
-      aEle.href = 'http://magicstory.wowxue.com/api/ActivationCode/Export?activityId=' + id
-      aEle.target = '_blank'//这里必须加上，否则a标签默认_self就与window.location.href效果一样了
-      aEle.click()// 设置点击事件
-      // activationCodeExport(id) // 下载暂时不可行，注释fixli
+      let params = { batchId: id}
+      // var aEle = document.createElement("a")// 创建a标签
+      // aEle.download = 'a.txt'// 设置下载文件的文件名
+      // aEle.href = 'http://magicstory.wowxue.com/api/ActivationCode/Export?activityId=' + id
+      // aEle.target = '_blank'//这里必须加上，否则a标签默认_self就与window.location.href效果一样了
+      // aEle.click()// 设置点击事件
+      activationCodeExport(params).then(res => {
+        console.log(res, 'ssss')
+      })
     },
     click() {
     //   this.$router.push({name:'app'})
     },
     checksSave(data) {
+      console.log(data, '------')
+      this.catalogNames = []
       if (data.type == 'mulu') {
-        // this.ruleForm.CatelogIds = JSON.stringify(data.checks);
-        this.ruleForm.CatelogIds = data.checks.join()
-        this.CatelogNmaes = data.names
+        this.form.catalogIds = data.checks.join()
+
+        for (let index = 0; index < data.names.length; index++) {    
+          this.catalogNames.push({id: index, name: data.names[index]})      
+        }
+        console.log(this.catalogNames)
         this.CatelogDialog = false
+        this.cateNameShow = true
       } else {
-        // this.ruleForm.KnowledgepointIds = JSON.stringify(data.checks);
         this.ruleForm.KnowledgepointIds = data.checks.join()
         this.KnowledgeNmaes = data.names
         this.KnowledgeDialog = false
+        this.cateNameShow = true
       }
-
+      console.log(this.form, 'form')
     }
   }
 }
@@ -374,8 +390,14 @@ export default {
 /deep/ .el-button--mini, /deep/ .el-button--mini.is-round {
     margin-bottom: 20px;
 }
-.usetime /deep/ .el-input__inner {
-  width: 200px;
+.usetime {
+  width: 220px;
+  /deep/ .el-input__inner {
+    width: 200px;
+  }
+}
+.usetimetip {
+  font-size: 12px;
 }
 .down {
     color: #5c887a;
@@ -385,6 +407,19 @@ export default {
 }
 .state {
     color: #e6a23c
+}
+.cata {
+  /deep/ .el-form-item__content {
+    display: flex;
+    justify-content: flex-start;
+    .cataName {
+      margin-left: 10px;
+    }
+  }
+}
+.use {
+  display: flex;
+  justify-content: flex-start;
 }
 .content {
     width: 100%;
@@ -414,6 +449,5 @@ export default {
         border-radius: 5px;
         cursor: pointer;
     }
-
 }
 </style>
