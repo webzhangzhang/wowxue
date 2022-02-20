@@ -72,6 +72,7 @@
       layout="prev, pager, next"
       :hide-on-single-page="isShow"
       align="center"
+      @current-change="codeCurrentChange"
       :total="tableData.length">
     </el-pagination>
     <!-- 生成激活码弹窗 -->
@@ -147,6 +148,14 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :hide-on-single-page="isShow"
+        align="center"
+        @current-change="handleCurrentChange"
+        :total="activationCodeList.length">
+      </el-pagination>
     </el-dialog>
   </div>
 </template>
@@ -242,6 +251,9 @@ export default {
         }]
       }],
       CatelogIds: [],
+      lookListPage: 1,
+      currentLookId: null,
+      lookListCodePage:1
     }
   },
   created() {
@@ -269,16 +281,19 @@ export default {
         remark: this.form.remark
       }
       activationBatchAdd(data).then(res => {
-        console.log(res, 'tessss')
-        this.$message.success('添加成功')
-        this.dialogFormVisible = false
-        this.getActivationBatch()
+        if (res.StatusCode === '200') {
+          this.$message.success('添加成功')
+          this.dialogFormVisible = false
+          this.getActivationBatch()
+        } else {
+          this.$message.error('添加失败，请联系管理员')
+        }
       })
     },
     // 获取激活码批次
     getActivationBatch() {
       let params = {
-        page: 1,
+        page: this.lookListCodePage,
         limit: 10
       }
       getActivationBatchList(params).then(res => {
@@ -291,28 +306,40 @@ export default {
           if (this.tableData.length > 10) {
             this.isShow = false
           }
-          console.log(res)
         }
       })
     },
     // 删除激活码批次
     delActivationBatch(id) {
-      deleteActivationBatch(id)
+      deleteActivationBatch(id).then(res => {
+        if (res.StatusCode === '200') {
+          this.$message.success('删除成功')
+        }
+      })
     },
     // 激活码批次启用
     activationBatchListEnable(id) {
-      activationBatchEnable(id)
+      activationBatchEnable(id).then(res => {
+        if (res.StatusCode === '200') {
+          this.$message.success('启用成功')
+        }
+      })
     },
     // 激活码批次禁用
     activationBatchListDisable(id) {
-      activationBatchDisable(id)
+      activationBatchDisable(id).then(res => {
+        if (res.StatusCode === '200') {
+          this.$message.success('禁用成功')
+        }
+      })
     },
     // 查看列表
     lookActivationCodeList(id) {
+      this.currentLookId = id
       let params = {
-        page: 1,
+        page: this.lookListPage,
         limit: 10,
-        Id: id
+        Id: this.currentLookId
       }
       getActivationCodeList(params).then(res => {
         if (res.StatusCode === '200') {
@@ -321,7 +348,7 @@ export default {
             item.EndDate = moment(item.EndDate).format('YYYY/MM/DD hh:mm:ss')
             item.ActivationDate = moment(item.ActivationDate).format('YYYY/MM/DD hh:mm:ss')
           })
-          // this.activationCodeList = res.Data
+          this.activationCodeList = res.Data
           this.dialogLookVisible = true
         }
       })
@@ -364,7 +391,6 @@ export default {
     //   this.$router.push({name:'app'})
     },
     checksSave(data) {
-      console.log(data, '------')
       this.catalogNames = []
       if (data.type == 'mulu') {
         this.form.catalogIds = data.checks.join()
@@ -372,7 +398,6 @@ export default {
         for (let index = 0; index < data.names.length; index++) {    
           this.catalogNames.push({id: index, name: data.names[index]})      
         }
-        console.log(this.catalogNames)
         this.CatelogDialog = false
         this.cateNameShow = true
       } else {
@@ -381,7 +406,16 @@ export default {
         this.KnowledgeDialog = false
         this.cateNameShow = true
       }
-      console.log(this.form, 'form')
+    },
+    // 查看列表分页
+    handleCurrentChange(val) {
+      this.lookListPage = val
+      this.lookActivationCodeList(this.currentLookId)
+    },
+    // 激活码分页
+    codeCurrentChange(val) {
+      this.lookListCodePage = val
+      this.getActivationBatch()
     }
   }
 }
