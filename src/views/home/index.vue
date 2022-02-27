@@ -94,9 +94,7 @@ export default {
     }
   },
   created() {
-    // window.addEventListener('storage', this.afterQRScan)
     this.nickName = JSON.parse(localStorage.getItem('loginInfo')).NickName
-    console.log(this.nickName)
     var _this = this
     document.onkeydown = function(e) {   //按下回车提交
       console.log(e)
@@ -143,7 +141,6 @@ export default {
           this.$store.dispatch('user/login', this.loginForm)
             .then((res) => {
               console.log(res)
-              // this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.$router.push({ path:"/"})
               this.loading = false
             })

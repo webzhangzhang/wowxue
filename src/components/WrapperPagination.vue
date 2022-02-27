@@ -63,7 +63,6 @@ export default {
     },
     fetchPage() {
       const params = {}
-      // console.log(this.paramsName)
       params[this.paramsName[0]] = this.pageNo
       params[this.paramsName[1]] = this.pageSize
       this.fetchData(params)

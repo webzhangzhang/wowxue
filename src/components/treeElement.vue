@@ -49,7 +49,7 @@ export default {
     },
     checkIds: {
       type: Array,
-      default: () => ''
+      default: () => []
     },
   },
   data() {
@@ -61,6 +61,11 @@ export default {
         label: 'CatalogName',
         id: 'Id',
       }
+    }
+  },
+  watch: {
+    checkIds: function() {
+      this.setCheckedKeys()
     }
   },
   created() {
@@ -95,7 +100,6 @@ export default {
       CatelogList(Data).then(res => {
         if (res.StatusCode === '200') {
           this.dataSource = res.Data.List
-          console.log(this.dataSource)
         }
       })
     },
@@ -117,7 +121,6 @@ export default {
       this.$emit('checksSave', data)
     },
     setCheckedKeys() {
-       
       var checkIds = this.checkIds
       this.$nextTick(() => {
         this.$refs.tree.setCheckedKeys(checkIds)

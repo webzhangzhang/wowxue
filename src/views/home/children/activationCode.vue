@@ -62,7 +62,6 @@
           <el-button @click="exportExcel(scope.row.Id)" type="text" size="small" class="down">批量导出</el-button>
           <el-button @click="lookPermiss(scope.row)" type="text" size="small">查看权限</el-button>
           <el-button @click="delActivationBatch(scope.row.Id)" type="text" size="small" class="del">删除</el-button>
-          <!-- <el-button @click="activationBatchListEnable() : activationBatchListDisable()" type="text" size="small" class="state"> {{ scope.row.state === 0 ? '禁用' : '启用' }}</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -142,8 +141,8 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button @click="scope.row.IsEnable === 0 ? enable(scope.row.Id): disable(scope.row.Id)" :type="scope.row.IsEnable === 0 ? 'danger' : 'primary'">
-              {{ scope.row.IsEnable === 0 ? '禁用': '启用' }}
+            <el-button @click="scope.row.IsEnable === false ? enable(scope.row.Id): disable(scope.row.Id)" :type="scope.row.IsEnable === true ? 'danger' : 'primary'">
+              {{ scope.row.IsEnable === false? '启用': '禁用' }}
             </el-button>
           </template>
         </el-table-column>
@@ -219,7 +218,7 @@ export default {
       },
       catalogNames: [], // 选择目录的数组
       treeData: [],
-      CatelogIds: [],
+      CatelogIds: [], // 已经选择的目录，用于回显
       lookListPage: 1,
       currentLookId: null,
       lookListCodePage:1,
@@ -240,16 +239,17 @@ export default {
           names = item.name
         }
       })
-      let param = new FormData()
-      param.append('batchName', this.form.batchName)
-      param.append('startDate', moment(this.value1[0]).utc().format())
-      param.append('endDate', moment(this.value1[1]).utc().format())
-      param.append('validDays', +this.form.validDays)
-      param.append('codeCount', +this.form.codeCount)
-      param.append('catalogIds', this.form.catalogIds)
-      param.append('catalogNames', names)
-      param.append('remark', this.form.remark)
-      activationBatchAdd(param).then(res => {
+      let data = {
+        batchName: this.form.batchName,
+        startDate: moment(this.value1[0]).utc().format(),
+        endDate: moment(this.value1[1]).utc().format(),
+        validDays: +this.form.validDays,
+        codeCount: +this.form.codeCount,
+        catalogIds: this.form.catalogIds,
+        catalogNames: names,
+        remark: this.form.remark
+      }
+      activationBatchAdd(data).then(res => {
         if (res.StatusCode === '200') {
           this.$message.success('添加成功')
           this.dialogFormVisible = false
@@ -282,15 +282,27 @@ export default {
     },
     // 查看权限
     lookPermiss(data) {
-      console.log(data)
+      this.CatelogIds = data.CatalogIds.split(',')
+      this.CatelogDialog = true
     },
     // 删除激活码批次
     delActivationBatch(id) {
-      deleteActivationBatch(id).then(res => {
-        if (res.StatusCode === '200') {
-          this.$message.success('删除成功')
-          this.getActivationBatch()
-        }
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteActivationBatch(id).then(res => {
+          if (res.StatusCode === '200') {
+            this.$message.success('删除成功')
+            this.getActivationBatch()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })          
       })
     },
     // 激活码批次启用
@@ -360,20 +372,12 @@ export default {
     exportExcel(id) {
       let params = { batchId: id}
       activationCodeExport(params).then(res => {
-        console.log(res, 'ssss')
         if (res. StatusCode === '200') {
           window.open(res.Data)
-          // let aEle = document.createElement("a")// 创建a标签
-          // aEle.download = '激活码.xls'// 设置下载文件的文件名
-          // aEle.href = res.Data
-          // aEle.target = '_blank'//这里必须加上，否则a标签默认_self就与window.location.href效果一样了
-          // aEle.click()// 设置点击事件
         }
       })
     },
-    click() {
-    //   this.$router.push({name:'app'})
-    },
+    // 保存目录
     checksSave(data) {
       this.catalogNames = []
       if (data.type == 'mulu') {

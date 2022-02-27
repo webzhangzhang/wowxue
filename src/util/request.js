@@ -9,10 +9,10 @@ const service = axios.create({
   baseURL:'http://magicstory.wowxue.com',
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 1000 * 10, // request timeout
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
-    // 'Content-Type': 'x-www-form-urlencoded' // fixli 这块修改是因为在修改删除时不知道怎么回事登录接口有问题了，然后修改了传值方式就可以了，莫名其妙，前端登录接口一点变化没有，就是不行了，希望以后的人看一下原因
-  }
+  // headers: {
+  //   'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+  //   // 'Content-Type': 'x-www-form-urlencoded' // fixli 这块修改是因为在修改删除时不知道怎么回事登录接口有问题了，然后修改了传值方式就可以了，莫名其妙，前端登录接口一点变化没有，就是不行了，希望以后的人看一下原因
+  // }
 })
 
 // request interceptor
@@ -20,7 +20,14 @@ service.interceptors.request.use(
   config => {
     // do something before request is sent
     if (store.getters.token) {
+      console.log(config, 'config')
       config.headers['Authorization'] = getToken()
+      if (config.method === 'post') {
+        config.headers['Content-Type'] = 'application/json'
+      }
+      if (config.method === 'put') {
+        config.headers['Content-Type'] = 'application/form-data'
+      }
     }
     return config
   },

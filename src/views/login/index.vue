@@ -134,7 +134,6 @@ export default {
           }
           this.$store.dispatch('user/login', data)
             .then(() => {
-              console.log(this.$store.state, 'SET_TOKEN')
               this.$router.push({ path:"/activationCode"})
               this.loading = false
             })
