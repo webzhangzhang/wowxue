@@ -18,12 +18,22 @@
       </el-aside>
       <el-container>
         <el-header class="header">
-          <div class="header-right">
-            <div>
-              name
+          <el-popover
+            placement="top"
+            width="160"
+            v-model="visible">
+            <p>是否退出？</p>
+            <div style="text-align: right; margin: 0">
+              <el-button size="mini" type="text" @click="visible = false">取消</el-button>
+              <el-button type="primary" size="mini" @click="reload">确定</el-button>
             </div>
-            <i class="el-icon-caret-bottom"></i>
-          </div>
+            <div class="header-right" slot="reference">
+              <div style="position: relative;">
+                {{ nickName }}
+              </div>
+              <i class="el-icon-caret-bottom"></i>
+            </div>
+          </el-popover>
         </el-header>
         <el-main>
           <router-view />
@@ -66,7 +76,9 @@ export default {
       loading: false,
       showDialog: false,
       redirect: undefined,
-      otherQuery: {}
+      otherQuery: {},
+      nickName: '', // 用户名
+      visible: false // 是否显示退出按钮
     }
   },
   watch: {
@@ -83,6 +95,8 @@ export default {
   },
   created() {
     // window.addEventListener('storage', this.afterQRScan)
+    this.nickName = JSON.parse(localStorage.getItem('loginInfo')).NickName
+    console.log(this.nickName)
     var _this = this
     document.onkeydown = function(e) {   //按下回车提交
       console.log(e)
@@ -104,6 +118,10 @@ export default {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
+    reload() {
+      this.$store.dispatch('user/logout')
+      this.$router.replace({ path: '/login' })
+    },
     checkCapslock(e) {
       const { key } = e
       this.capsTooltip = key && key.length === 6 && (key >= 'A' && key <= 'Z')
@@ -119,11 +137,9 @@ export default {
       })
     },
     handleLogin() {
-
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-
           this.$store.dispatch('user/login', this.loginForm)
             .then((res) => {
               console.log(res)
@@ -177,6 +193,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.abs {
+  position: absolute;
+  top: 50px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px 30px;
+}
     /deep/ .el-aside {
         height: 100vh;
         background-color: #304156;

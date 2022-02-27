@@ -95,6 +95,7 @@ export default {
       CatelogList(Data).then(res => {
         if (res.StatusCode === '200') {
           this.dataSource = res.Data.List
+          console.log(this.dataSource)
         }
       })
     },
@@ -126,7 +127,6 @@ export default {
       this.$refs.tree.setCheckedKeys([])
     },
     nodeClick(a) {
-       
       this.$emit('nodeClick', a.Id)
     },
 

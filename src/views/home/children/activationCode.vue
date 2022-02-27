@@ -60,7 +60,7 @@
         <template slot-scope="scope">
           <el-button @click="lookActivationCodeList(scope.row.Id)" type="text" size="small" >查看列表</el-button>
           <el-button @click="exportExcel(scope.row.Id)" type="text" size="small" class="down">批量导出</el-button>
-          <el-button @click="handleClick(scope.row)" type="text" size="small">查看权限</el-button>
+          <el-button @click="lookPermiss(scope.row)" type="text" size="small">查看权限</el-button>
           <el-button @click="delActivationBatch(scope.row.Id)" type="text" size="small" class="del">删除</el-button>
           <!-- <el-button @click="activationBatchListEnable() : activationBatchListDisable()" type="text" size="small" class="state"> {{ scope.row.state === 0 ? '禁用' : '启用' }}</el-button> -->
         </template>
@@ -240,16 +240,6 @@ export default {
           names = item.name
         }
       })
-      // let data = {
-      //   batchName: this.form.batchName,
-      //   startDate: moment(this.value1[0]).utc().format(),
-      //   endDate: moment(this.value1[1]).utc().format(),
-      //   validDays: +this.form.validDays,
-      //   codeCount: +this.form.codeCount,
-      //   catalogIds: this.form.catalogIds,
-      //   catalogNames: names,
-      //   remark: this.form.remark
-      // }
       let param = new FormData()
       param.append('batchName', this.form.batchName)
       param.append('startDate', moment(this.value1[0]).utc().format())
@@ -289,6 +279,10 @@ export default {
           }
         }
       })
+    },
+    // 查看权限
+    lookPermiss(data) {
+      console.log(data)
     },
     // 删除激活码批次
     delActivationBatch(id) {

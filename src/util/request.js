@@ -38,25 +38,7 @@ service.interceptors.response.use(
         duration: 5 * 1000
       })
       if (res.StatusCode === '403') {
-        console.log(this)
-        console.log('信息过期，重登')
-        // router.replace({
-        //   path: '/login' // 到登录页重新获取token
-        // })
-        // MessageBox.confirm(res.StatusMessage, {
-        //   confirmButtonText: 'Re-Login',
-        //   cancelButtonText: 'Cancel',
-        //   type: 'warning'
-        // }).then(() => {
-        //   // this.$router.push('/login')
-        //   // location.reload('/login')
-        //   // store.dispatch('user/resetToken').then(() => {
-        //   //   location.reload()
-        //   // })
-        //   // router.push({
-        //   //   path: "/login"
-        //   // })
-        // })
+        location.href = '/login'
       }
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.StatusCode === 50008 || res.StatusCode === 50012 || res.StatusCode === 50014) {
