@@ -14,36 +14,12 @@ const authRoutes = [
     component: () => import ('@/views/home'),
     children: [
       {
-        path: '/activationCode',
+        path: '/activationCode', // 激活码页面
         name: 'activationCode',
         component: () =>
         import ('@/views/home/children/activationCode'),
       }
     ]
-  },
-  {
-    path: '/demo',  // 测试测试路由加载和请求
-    name: 'demo',
-    component: () =>
-    import ('@/views/demo/index'),
-    children: [
-      {
-        path: '/demo', // 测试路由
-        name: 'app',
-        component: () =>
-        import ('@/views/demo/apppage'),
-      }
-    ]
-  },
-  {
-    path: '/routerChild',  // 测试路由
-    name: 'routerChild',
-    component: () => import ('@/views/demo/routerChild')
-  },
-  {
-    path: '/nodata',  // 没有数据路由
-    name: 'nodata',
-    component: () => import ('@/components/EmptyData')
   }
 ]
 

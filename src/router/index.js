@@ -4,7 +4,7 @@ import testRouter from './config'
 
 Vue.use(Router)
 const router = new Router({
-  mode: 'history',
+  // mode: 'history',
   base: process.env.NODE_ENV === 'production' ? '/report' : '',
   routes: testRouter,
 })

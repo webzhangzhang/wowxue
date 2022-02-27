@@ -45,7 +45,7 @@ service.interceptors.response.use(
         duration: 5 * 1000
       })
       if (res.StatusCode === '403') {
-        location.href = '/login'
+        location.href = '#/login'
       }
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.StatusCode === 50008 || res.StatusCode === 50012 || res.StatusCode === 50014) {
