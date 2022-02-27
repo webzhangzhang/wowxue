@@ -7,17 +7,13 @@ import Cookies from 'js-cookie'
 // create an axios instance
 const service = axios.create({
   baseURL:'http://magicstory.wowxue.com',
-  //baseURL:'//apicenter.wowxue.com',
-  //baseURL:'http://localhost:5080',
-  // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 1000 * 10, // request timeout
   headers: {
-    // 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
-    'Content-Type': 'application/json;charset=UTF-8' // fixli 这块修改是因为在修改删除时不知道怎么回事登录接口有问题了，然后修改了传值方式就可以了，莫名其妙，前端登录接口一点变化没有，就是不行了，希望以后的人看一下原因
+    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+    // 'Content-Type': 'x-www-form-urlencoded' // fixli 这块修改是因为在修改删除时不知道怎么回事登录接口有问题了，然后修改了传值方式就可以了，莫名其妙，前端登录接口一点变化没有，就是不行了，希望以后的人看一下原因
   }
 })
-// axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8'
 
 // request interceptor
 service.interceptors.request.use(
@@ -26,17 +22,12 @@ service.interceptors.request.use(
     if (store.getters.token) {
       config.headers['Authorization'] = getToken()
     }
-    // if (config.method === 'post') {
-    //       config.data = qs.stringify(config.data)
-    // }
     return config
   },
   error => {
     return Promise.reject(error)
   }
 )
-
-// response interceptor
 service.interceptors.response.use(
   function(response) {
     const res = response.data
@@ -46,6 +37,27 @@ service.interceptors.response.use(
         type: 'error',
         duration: 5 * 1000
       })
+      if (res.StatusCode === '403') {
+        console.log(this)
+        console.log('信息过期，重登')
+        // router.replace({
+        //   path: '/login' // 到登录页重新获取token
+        // })
+        // MessageBox.confirm(res.StatusMessage, {
+        //   confirmButtonText: 'Re-Login',
+        //   cancelButtonText: 'Cancel',
+        //   type: 'warning'
+        // }).then(() => {
+        //   // this.$router.push('/login')
+        //   // location.reload('/login')
+        //   // store.dispatch('user/resetToken').then(() => {
+        //   //   location.reload()
+        //   // })
+        //   // router.push({
+        //   //   path: "/login"
+        //   // })
+        // })
+      }
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.StatusCode === 50008 || res.StatusCode === 50012 || res.StatusCode === 50014) {
         // to re-login

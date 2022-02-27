@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="con">
     <el-button type="primary" icon="el-icon-circle-plus-outline" @click="dialogFormVisible = true">生成激活码</el-button>
     <!-- 激活码批次列表 -->
     <el-table
@@ -73,7 +73,7 @@
       :hide-on-single-page="isShow"
       align="center"
       @current-change="codeCurrentChange"
-      :total="tableData.length">
+      :total="codeTotal">
     </el-pagination>
     <!-- 生成激活码弹窗 -->
     <el-dialog title="生成激活码" :visible.sync="dialogFormVisible">
@@ -121,17 +121,17 @@
     <!-- 查看列表弹窗 -->
     <el-dialog title="查看列表" :visible.sync="dialogLookVisible" width="1000px">
       <el-table :data="activationCodeList">
-        <el-table-column property="Id" label="序号" width="150"></el-table-column>
+        <el-table-column property="Id" label="序号" width="50"></el-table-column>
         <el-table-column property="Guid" label="激活码" width="200"></el-table-column>
-        <el-table-column property="status" label="状态">
+        <el-table-column property="status" label="状态" width="100">
           <template slot-scope="scope">
             <div>
               {{ scope.row.Status === '0' ? '未激活': scope.row.status === '1' ? '已激活' : '已失效' }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column property="UsedId" label="使用人"></el-table-column>
-        <el-table-column property="ActivationDate" label="激活时间"></el-table-column>
+        <el-table-column property="UsedId" label="使用人" width="100"></el-table-column>
+        <el-table-column label="激活时间" property="ActivationDate"></el-table-column>
         <el-table-column label="使用有效期">
           <template slot-scope="scope">
             <div>
@@ -154,13 +154,14 @@
         :hide-on-single-page="isShow"
         align="center"
         @current-change="handleCurrentChange"
-        :total="activationCodeList.length">
+        :total="activationTotal">
       </el-pagination>
     </el-dialog>
   </div>
 </template>
 <script>
 import elTree from '@/components/treeElement'
+import { debounce } from '@/util/common'
 // import moment from 'moment'
 // moment.locale('zh-cn')
 import {
@@ -181,17 +182,19 @@ export default {
     return {
       isShow: true,
       cateNameShow: false, // 选择的目录名称是否显示，有则显示，没有则隐藏
+      codeTotal: null, // 激活码列表总量
+      activationTotal: null, // 查看列表总数
       dialogFormVisible: false, // 生成激活码弹窗
       dialogLookVisible: false, // 查看列表弹窗
       activationCodeList: [{ // 查看列表
-        Id: 1,
-        Guid: '765765',
-        Status: 0, // 0-未激活，1-已激活，2-已失效
-        UsedId: 23456, // 使用人编号
-        ActivationDate: 65465465, // 激活时间
-        StartDate: 87687687687,
-        EndDate: 765564456,
-        IsEnable: 1, // 0-禁用，1-启用
+        Id: null,
+        Guid: '',
+        Status: null, // 0-未激活，1-已激活，2-已失效
+        UsedId: null, // 使用人编号
+        ActivationDate: null, // 激活时间
+        StartDate: null,
+        EndDate: null,
+        IsEnable: null, // 0-禁用，1-启用
       }],
       formLabelWidth: '120px',
       CatelogDialog: false, // 选择权限
@@ -199,12 +202,12 @@ export default {
       value2: '', // 使用有效期
       tableData: [{ // 激活码批次列表
         Id: 1,
-        BatchName: 'woshiname',
-        StartDate: 123123112,
-        EndDate: 123123123,
-        ValidDays: 20,
-        CodeCount: 100,
-        Remark: 'nonono'
+        BatchName: '',
+        StartDate: null,
+        EndDate: null,
+        ValidDays: null,
+        CodeCount: null,
+        Remark: ''
       }],
       form: {
         batchName: '',
@@ -215,45 +218,12 @@ export default {
         remark: ''
       },
       catalogNames: [], // 选择目录的数组
-      treeData: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }],
+      treeData: [],
       CatelogIds: [],
       lookListPage: 1,
       currentLookId: null,
-      lookListCodePage:1
+      lookListCodePage:1,
+      ispost: true // 是否发送请求，默认可以发送
     }
   },
   created() {
@@ -261,7 +231,7 @@ export default {
   },
   methods:{
     // 生成激活码
-    activationAdd() {
+    activationAdd : debounce(function() {
       let names = ''
       this.catalogNames.forEach((item, index) => {
         if (index !== 0) {
@@ -270,26 +240,36 @@ export default {
           names = item.name
         }
       })
-      let data = {
-        batchName: this.form.batchName,
-        startDate: moment(this.value1[0]).utc().format(),
-        endDate: moment(this.value1[1]).utc().format(),
-        validDays: +this.form.validDays,
-        codeCount: +this.form.codeCount,
-        catalogIds: this.form.catalogIds,
-        catalogNames: names,
-        remark: this.form.remark
-      }
-      activationBatchAdd(data).then(res => {
+      // let data = {
+      //   batchName: this.form.batchName,
+      //   startDate: moment(this.value1[0]).utc().format(),
+      //   endDate: moment(this.value1[1]).utc().format(),
+      //   validDays: +this.form.validDays,
+      //   codeCount: +this.form.codeCount,
+      //   catalogIds: this.form.catalogIds,
+      //   catalogNames: names,
+      //   remark: this.form.remark
+      // }
+      let param = new FormData()
+      param.append('batchName', this.form.batchName)
+      param.append('startDate', moment(this.value1[0]).utc().format())
+      param.append('endDate', moment(this.value1[1]).utc().format())
+      param.append('validDays', +this.form.validDays)
+      param.append('codeCount', +this.form.codeCount)
+      param.append('catalogIds', this.form.catalogIds)
+      param.append('catalogNames', names)
+      param.append('remark', this.form.remark)
+      activationBatchAdd(param).then(res => {
         if (res.StatusCode === '200') {
           this.$message.success('添加成功')
           this.dialogFormVisible = false
           this.getActivationBatch()
+          this.initData()
         } else {
           this.$message.error('添加失败，请联系管理员')
         }
       })
-    },
+    }),
     // 获取激活码批次
     getActivationBatch() {
       let params = {
@@ -298,11 +278,12 @@ export default {
       }
       getActivationBatchList(params).then(res => {
         if (res.StatusCode === '200') {
-          res.Data.forEach(item => {
+          res.Data.List.forEach(item => {
             item.StartDate = moment(item.StartDate).format('YYYY/MM/DD hh:mm:ss')
             item.EndDate = moment(item.EndDate).format('YYYY/MM/DD hh:mm:ss')
           })
-          this.tableData = res.Data
+          this.tableData = res.Data.List
+          this.codeTotal = res.Data.Count
           if (this.tableData.length > 10) {
             this.isShow = false
           }
@@ -314,6 +295,7 @@ export default {
       deleteActivationBatch(id).then(res => {
         if (res.StatusCode === '200') {
           this.$message.success('删除成功')
+          this.getActivationBatch()
         }
       })
     },
@@ -343,48 +325,56 @@ export default {
       }
       getActivationCodeList(params).then(res => {
         if (res.StatusCode === '200') {
-          res.Data.forEach(item => {
+          res.Data.List.forEach(item => {
             item.StartDate = moment(item.StartDate).format('YYYY/MM/DD hh:mm:ss')
             item.EndDate = moment(item.EndDate).format('YYYY/MM/DD hh:mm:ss')
-            item.ActivationDate = moment(item.ActivationDate).format('YYYY/MM/DD hh:mm:ss')
+            item.ActivationDate = item.ActivationDate? moment(item.ActivationDate).format('YYYY/MM/DD hh:mm:ss') : '-'
           })
-          this.activationCodeList = res.Data
+          this.activationCodeList = res.Data.List
+          this.activationTotal = res.Data.Count
           this.dialogLookVisible = true
         }
       })
     },
     // 激活码启用
     enable(id) {
-      let data = { id: id}
+      let data = new FormData()
+      data.append('id', id)
       activationCodeEnable(data).then(res => {
         if (res.StatusCode === '200') {
-          this.$message('成功')
+          this.$message.success('成功')
+          this.lookActivationCodeList(this.currentLookId)
         } else {
-          this.$message('失败')
+          this.$message.error('失败')
         }
       })
     },
     // 激活码禁用
     disable(id) {
-      let data = { id: id}
+      let data = new FormData()
+      data.append('id', id)
       activationCodeDisable(data).then(res => {
         if (res.StatusCode === '200') {
-          this.$message('成功')
+          this.$message.success('成功')
+          this.lookActivationCodeList(this.currentLookId)
         } else {
-          this.$message('失败')
+          this.$message.error('失败')
         }
       })
     },
     // 导出
     exportExcel(id) {
       let params = { batchId: id}
-      // var aEle = document.createElement("a")// 创建a标签
-      // aEle.download = 'a.txt'// 设置下载文件的文件名
-      // aEle.href = 'http://magicstory.wowxue.com/api/ActivationCode/Export?activityId=' + id
-      // aEle.target = '_blank'//这里必须加上，否则a标签默认_self就与window.location.href效果一样了
-      // aEle.click()// 设置点击事件
       activationCodeExport(params).then(res => {
         console.log(res, 'ssss')
+        if (res. StatusCode === '200') {
+          window.open(res.Data)
+          // let aEle = document.createElement("a")// 创建a标签
+          // aEle.download = '激活码.xls'// 设置下载文件的文件名
+          // aEle.href = res.Data
+          // aEle.target = '_blank'//这里必须加上，否则a标签默认_self就与window.location.href效果一样了
+          // aEle.click()// 设置点击事件
+        }
       })
     },
     click() {
@@ -416,6 +406,29 @@ export default {
     codeCurrentChange(val) {
       this.lookListCodePage = val
       this.getActivationBatch()
+    },
+    // 初始化数据
+    initData() {
+      this.form = {
+        batchName: '',
+        validDays: null,
+        codeCount: null,
+        catalogIds: '',
+        catalogNames: '',
+        remark: ''
+      }
+      this.activationCodeList = [{
+        Id: null,
+        Guid: '',
+        Status: null,
+        UsedId: null,
+        ActivationDate: null,
+        StartDate: null,
+        EndDate: null,
+        IsEnable: null,
+      }]
+      this.catalogNames = []
+      this.value1 = ''
     }
   }
 }
@@ -454,6 +467,9 @@ export default {
 .use {
   display: flex;
   justify-content: flex-start;
+}
+.con {
+  height: calc(100vh - 100px);
 }
 .content {
     width: 100%;

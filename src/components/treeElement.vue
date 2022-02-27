@@ -86,14 +86,6 @@ export default {
   },
   methods: {
     getFenlei(){
-      // CourseCategoryList().then(res => {
-      //   if (res.code == 200) {
-      //     this.dataSource = res.data
-
-      //   } else {
-      //     this.$message.error(res.message)
-      //   }
-      // })
     },
     getCategory(){
       let Data = {
@@ -101,27 +93,12 @@ export default {
         limit: 1000
       }
       CatelogList(Data).then(res => {
-        console.log(res, '----')
         if (res.StatusCode === '200') {
-          this.dataSource = res.Data
+          this.dataSource = res.Data.List
         }
       })
     },
     getKnowledge(){
-      // let Data = {
-      //   page: 1,
-      //   limit: 1000,
-      //   key: '',
-      // }
-      // KnowledgePointList(Data).then(res => {
-           
-      //   if (res.code == 200) {
-      //     this.dataSource = res.data
-
-      //   } else {
-      //     this.$message.error(res.message)
-      //   }
-      // })
     },
     getCheckedKeys() {
       var names=[]

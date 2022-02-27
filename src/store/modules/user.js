@@ -44,15 +44,11 @@ const actions = {
   login({
     commit
   }, userInfo) {
-    const {
-      loginName,
-      loginPassword
-    } = userInfo
     return new Promise((resolve, reject) => {
-      login({
-        loginName: loginName.trim(),
-        loginPassword: loginPassword
-      }).then(response => {
+      let param = new FormData()
+      param.append('loginName', userInfo.loginName)
+      param.append('loginPassword', userInfo.loginPassword)
+      login(param).then(response => {
         const {
           Data
         } = response

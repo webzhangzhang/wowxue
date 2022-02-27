@@ -1,5 +1,4 @@
 import request from '@/util/request'
-
 // 获取目录
 
 export function CatelogList(params) {
@@ -28,16 +27,16 @@ export function deleteActivationBatch(id) {
 export function activationBatchEnable(data) {
   return request({
     url: '/api/ActivationCode/Enable',
-    method: 'post',
-    data: JSON.stringify(data)
+    method: 'put',
+    data: data
   })
 }
 // 激活码批次禁用
 export function activationBatchDisable(data) {
   return request({
     url: '/api/ActivationCode/Enable',
-    method: 'post',
-    data: JSON.stringify(data)
+    method: 'put',
+    data
   })
 }
 // 生成激活码
@@ -60,16 +59,16 @@ export function getActivationCodeList(params) {
 export function activationCodeEnable(data) {
   return request({
     url: '/api/ActivationCode/Enable',
-    method: 'post',
-    data: JSON.stringify(data)
+    method: 'put',
+    data
   })
 }
 // 激活码禁用
 export function activationCodeDisable(data) {
   return request({
     url: '/api/ActivationCode/Disable',
-    method: 'post',
-    data,
+    method: 'put',
+    data
   })
 }
 // 激活码导出
