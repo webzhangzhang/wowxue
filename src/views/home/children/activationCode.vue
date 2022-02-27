@@ -327,7 +327,7 @@ export default {
       let params = {
         page: this.lookListPage,
         limit: 10,
-        Id: this.currentLookId
+        batchid: this.currentLookId
       }
       getActivationCodeList(params).then(res => {
         if (res.StatusCode === '200') {
