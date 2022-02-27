@@ -1,9 +1,8 @@
 const authRoutes = [
-  // {
-  //   path: '/activationCode', //激活码
-  //   name: 'activationCode',
-  //   component: () => import ('@/views/activationCode')
-  // },
+  {
+    path: '/',
+    redirect: '/login'
+  },
   {
     path: '/login',  // 登录路由
     name: 'login',
@@ -15,7 +14,7 @@ const authRoutes = [
     component: () => import ('@/views/home'),
     children: [
       {
-        path: '/activationCode', // 测试路由
+        path: '/activationCode',
         name: 'activationCode',
         component: () =>
         import ('@/views/home/children/activationCode'),
