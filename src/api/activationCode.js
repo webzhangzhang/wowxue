@@ -1,6 +1,6 @@
 import request from '@/util/request'
+// ---------------------激活码模块----------------------
 // 获取目录
-
 export function CatelogList(params) {
   return request({
     url: '/api/CatalogClassification/List',
@@ -80,6 +80,57 @@ export function activationCodeExport(params) {
     params
   })
 }
+// ---------------------用户管理----------------------
+// 获取用户列表
+export function getMemberList(params) {
+  return request({
+    url: '/api/Member/List',
+    method: 'get',
+    params
+  })
+}
+
+// 修改用户信息
+export function postMemberUpdate(data) {
+  return request({
+    url: '/api/Member/Update',
+    method: 'post',
+    data
+  })
+}
+// 个人用户启用
+export function MemberEnable(data) {
+  return request({
+    url: '/api/Member/Enable',
+    method: 'put',
+    data
+  })
+}
+// 个人用户禁用
+export function MemberDisable(data) {
+  return request({
+    url: '/api/Member/Disable',
+    method: 'put',
+    data
+  })
+}
+// 查看权限
+export function MemberViewPermissions(data) {
+  return request({
+    url: '/api/Member/ViewPermissions',
+    method: 'put',
+    data
+  })
+}
+// 重置密码
+export function MemberViewResetPassword(data) {
+  return request({
+    url: '/api/Member/ResetPassword',
+    method: 'put',
+    data
+  })
+}
+
 
 // 即需要传params，又要传data的 post
 export function getAuth(params,data) {

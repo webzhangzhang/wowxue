@@ -4,15 +4,28 @@
       <el-aside width="200px">
         <div class="asd-header">绘本管理系统</div>
         <el-menu
-          default-active="1"
+          router
+          :default-active="defaultMenu"
           background-color="#304156"
           text-color="#fff"
           class="el-menu-vertical-demo"
           @open="handleOpen"
           @close="handleClose">
-          <el-menu-item index="2" router>
+          <el-menu-item index="/activationCode" @click="getIndex()">
             <i class="el-icon-menu"></i>
             <span slot="title">激活码管理</span>
+          </el-menu-item>
+          <el-menu-item index="/userManagement" @click="getIndex()">
+            <i class="el-icon-menu"></i>
+            <span slot="title">用户管理</span>
+          </el-menu-item>
+          <el-menu-item index="/userManagement" @click="getIndex()">
+            <i class="el-icon-menu"></i>
+            <span slot="title">语音测评</span>
+          </el-menu-item>
+          <el-menu-item index="/directory" @click="getIndex()">
+            <i class="el-icon-menu"></i>
+            <span slot="title">目录管理</span>
           </el-menu-item>
         </el-menu>
       </el-aside>
@@ -63,6 +76,7 @@ export default {
       }
     }
     return {
+      defaultMenu: '/activationCode', // 默认打开的menu
       loginForm: {
         mobile: '',
         password: ''
@@ -116,6 +130,10 @@ export default {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
+    // 获取点击的侧边栏index
+    getIndex(index) {
+      this.defaultMenu = index
+    },
     reload() {
       this.$store.dispatch('user/logout')
       this.$router.replace({ path: '/login' })

@@ -13,12 +13,30 @@ const authRoutes = [
     name: 'home',
     component: () => import ('@/views/home'),
     children: [
+      // 激活码页面
       {
-        path: '/activationCode', // 激活码页面
+        path: '/activationCode',
         name: 'activationCode',
-        component: () =>
-        import ('@/views/home/children/activationCode'),
-      }
+        component: () => import ('@/views/home/children/activationCode'),
+      },
+      // 用户列表
+      {
+        path: '/userManagement',
+        name: 'userManagement',
+        component: () => import ('@/views/home/children/userManagement'),
+      },
+      // 语音测评
+      {
+        path: '/userManagement',
+        name: 'userManagement',
+        component: () => import ('@/views/home/children/userManagement'),
+      },
+      // 目录管理
+      {
+        path: '/directory',
+        name: 'directory',
+        component: () => import ('@/views/home/children/directory'),
+      },
     ]
   }
 ]
