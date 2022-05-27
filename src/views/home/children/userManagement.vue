@@ -77,17 +77,16 @@
     <el-dialog title="查看权限" :visible.sync="dialogTableVisible">
       <el-table :data="gridData">
         <el-table-column property="CodeNumber" label="激活码"></el-table-column>
-        <el-table-column property="name" label="激活时间"></el-table-column>
-        <el-table-column property="address" label="使用有效期"></el-table-column>
-        <el-table-column property="date" label="设备信息"></el-table-column>
-        <el-table-column property="date" label="对应权限"></el-table-column>
+        <el-table-column property="CreateDate" label="激活时间"></el-table-column>
+        <el-table-column property="ExperiationDate" label="使用有效期"></el-table-column>
+        <el-table-column property="EquipmentNumber" label="设备信息"></el-table-column>
       </el-table>
       <el-pagination
         background
         layout="prev, pager, next"
         hide-on-single-page
         align="center"
-        @current-change="handleCurrentChange"
+        @current-change="CurrentChange"
         :total="total">
       </el-pagination>
     </el-dialog>
@@ -155,7 +154,6 @@ export default {
     showChangeDialog(row) {
       let deepCopy = {...row}
       this.form = deepCopy
-      console.log(this.form)
       this.form.Sex? this.form.Sex = '男' : this.form.Sex = '女'
       this.dialogFormVisible = true
     },
@@ -171,7 +169,6 @@ export default {
         age: +this.form.Age
       }
       params.sex === '男' ? params.sex = 1 :params.sex = 0
-      console.log(params)
       postMemberUpdate(params).then(res => {
         if (res.StatusCode === '200') {
           this.$message.success('成功')
@@ -210,13 +207,20 @@ export default {
     },
     // 查看权限
     lookPermiss(id) {
-      let data = new FormData()
-      data.append('id', id)
+      let data = {
+        memberId: id,
+        page: this.gridPage,
+        limit: 10
+      }
       MemberViewPermissions(data).then(res => {
         if (res.StatusCode === '200') {
           this.dialogTableVisible = true
-          this.gridData = res.Data
-          this.gridTotal = null
+          res.Data.List.forEach(item => {
+            item.CreateDate = moment(item.CreateDate).format('YYYY/MM/DD hh:mm:ss')
+            item.ExperiationDate = moment(item.ExperiationDate).format('YYYY/MM/DD hh:mm:ss')
+          })
+          this.gridData = res.Data.List
+          this.gridTotal = res.Data.Count
         }
       })
     },
@@ -240,6 +244,11 @@ export default {
     handleCurrentChange(val) {
       this.page = val
       this.getList()
+    },
+    // 查看权限分页
+    CurrentChange(val) {
+      this.gridData = val
+      this.lookPermiss()
     },
     // 重置信息
     resetData() {

@@ -16,15 +16,15 @@
             <span slot="title">激活码管理</span>
           </el-menu-item>
           <el-menu-item index="/userManagement" @click="getIndex()">
-            <i class="el-icon-menu"></i>
+            <i class="el-icon-s-custom"></i>
             <span slot="title">用户管理</span>
           </el-menu-item>
-          <el-menu-item index="/userManagement" @click="getIndex()">
-            <i class="el-icon-menu"></i>
+          <el-menu-item index="/aiCount" @click="getIndex()">
+            <i class="el-icon-s-marketing"></i>
             <span slot="title">语音测评</span>
           </el-menu-item>
           <el-menu-item index="/directory" @click="getIndex()">
-            <i class="el-icon-menu"></i>
+            <i class="el-icon-s-grid"></i>
             <span slot="title">目录管理</span>
           </el-menu-item>
         </el-menu>

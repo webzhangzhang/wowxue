@@ -115,11 +115,11 @@ export function MemberDisable(data) {
   })
 }
 // 查看权限
-export function MemberViewPermissions(data) {
+export function MemberViewPermissions(params) {
   return request({
     url: '/api/Member/ViewPermissions',
-    method: 'put',
-    data
+    method: 'get',
+    params
   })
 }
 // 重置密码

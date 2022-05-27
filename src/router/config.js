@@ -27,9 +27,9 @@ const authRoutes = [
       },
       // 语音测评
       {
-        path: '/userManagement',
-        name: 'userManagement',
-        component: () => import ('@/views/home/children/userManagement'),
+        path: '/aiCount',
+        name: 'aiCount',
+        component: () => import ('@/views/home/children/aiCount'),
       },
       // 目录管理
       {
