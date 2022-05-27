@@ -36,7 +36,7 @@ const authRoutes = [
         path: '/directory',
         name: 'directory',
         component: () => import ('@/views/home/children/directory'),
-      },
+      }
     ]
   }
 ]

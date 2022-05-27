@@ -48,7 +48,7 @@
             </div>
           </el-popover>
         </el-header>
-        <el-main>
+        <el-main class="showHeight">
           <router-view />
         </el-main>
       </el-container>
@@ -208,6 +208,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.showHeight {
+  height: calc(100vh - 100px);
+  background-color: #fff;
+}
 .abs {
   position: absolute;
   top: 50px;

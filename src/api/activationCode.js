@@ -130,7 +130,37 @@ export function MemberViewResetPassword(data) {
     data
   })
 }
-
+// 获取目录列表
+export function getCatalogClassificationListTree(params) {
+  return request({
+    url: '/api/CatalogClassification/ListTree',
+    method: 'get',
+    params
+  })
+}
+// 更新目录
+export function getCatalogClassificationUpdate(data) {
+  return request({
+    url: '/api/CatalogClassification/Update',
+    method: 'post',
+    data
+  })
+}
+// 新增目录
+export function getCatalogClassificationAdd(data) {
+  return request({
+    url: '/api/CatalogClassification/Add',
+    method: 'post',
+    data
+  })
+}
+// 删除目录
+export function getCatalogClassificationDelete(id) {
+  return request({
+    url: '/api/CatalogClassification/Delete?id=' + id,
+    method: 'delete',
+  })
+}
 
 // 即需要传params，又要传data的 post
 export function getAuth(params,data) {

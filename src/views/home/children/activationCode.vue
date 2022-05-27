@@ -466,9 +466,6 @@ export default {
   display: flex;
   justify-content: flex-start;
 }
-.con {
-  height: calc(100vh - 100px);
-}
 .content {
     width: 100%;
     height: 660px;
