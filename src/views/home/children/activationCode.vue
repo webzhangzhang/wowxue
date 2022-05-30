@@ -150,8 +150,10 @@
         <el-table-column label="使用有效期">
           <template slot-scope="scope">
             <div>
-              {{ scope.row.StartDate }} -
-              <div>{{ scope.row.EndDate }}</div>
+              <div v-if="scope.row.ActivationDate">
+                {{ scope.row.ActivationDate }} -
+                <div>{{ scope.row.ActivationEndDate }}</div>
+              </div>
             </div>
           </template>
         </el-table-column>
@@ -410,11 +412,18 @@ export default {
       getActivationCodeList(params).then(res => {
         if (res.StatusCode === '200') {
           res.Data.List.forEach(item => {
+            if (item.ActivationDate) {
+              var date = new Date(item.ActivationDate)
+              date.setDate(date.getDate() + item.ValidDays)
+              item.ActivationEndDate = date
+            }
             item.StartDate = moment(item.StartDate).format('YYYY/MM/DD hh:mm:ss')
             item.EndDate = moment(item.EndDate).format('YYYY/MM/DD hh:mm:ss')
-            item.ActivationDate = item.ActivationDate? moment(item.ActivationDate).format('YYYY/MM/DD hh:mm:ss') : '-'
+            item.ActivationDate = item.ActivationDate? moment(item.ActivationDate).format('YYYY/MM/DD hh:mm:ss') : ''
+            item.ActivationEndDate = moment(item.ActivationEndDate).format('YYYY/MM/DD hh:mm:ss')
           })
           this.activationCodeList = res.Data.List
+          console.log(this.activationCodeList, '-')
           this.activationTotal = res.Data.Count
           this.dialogLookVisible = true
         }
