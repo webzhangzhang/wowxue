@@ -43,7 +43,7 @@ import { getMemberEvaluationList } from '@/api/activationCode'
 export default {
   data() {
     return {
-      inputContent: '',
+      inputContent: '', // 搜索输入的内容，暂时无用
       select: '1',
       tableData: [], // 列表数据
       page: 1, // 当前页
