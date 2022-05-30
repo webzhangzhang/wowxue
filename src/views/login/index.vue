@@ -2,14 +2,14 @@
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
       <div class="title-container">
-        <h3 class="title">机构管理系统</h3>
+        <h3 class="title">APP管理系统</h3>
       </div>
       <el-form-item prop="username">
         <el-input
           ref="username"
           v-model="loginForm.mobile"
           prefix-icon="el-icon-user"
-          placeholder="手机号"
+          placeholder="账号"
           name="mobile"
           type="text"
           tabindex="1"
@@ -53,7 +53,7 @@ export default {
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 3) {
-        callback(new Error('The password can not be less than 3 digits'))
+        callback(new Error('密码不能少于3位'))
       } else {
         callback()
       }

@@ -34,7 +34,7 @@
         label="性别">
         <template slot-scope="scope">
           <div>
-            {{ scope.row.Sex? '男' : '女' }}
+            {{ scope.row.Sex === 0? '女' : scope.row.Sex === 1? '男' : '' }}
           </div>
         </template>
       </el-table-column>
@@ -77,7 +77,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="resetData">取 消</el-button>
+        <el-button @click="resetDataChange">取 消</el-button>
         <el-button type="primary" @click="changeUserMessage">确 定</el-button>
       </div>
     </el-dialog>
@@ -164,6 +164,15 @@ export default {
         params.nickName = this.inputContent
       }
       getMemberList(params).then(res => {
+        res.Data.List.forEach(item => {
+          if (item.Sex === 0) {
+            item.Sex = 0
+          } else if (item.Sex === 1) {
+            item.Sex = 1
+          } else {
+            item.Sex = 3
+          }
+        })
         this.tableData = res.Data.List
         this.total = res.Data.Count
       })
@@ -183,18 +192,28 @@ export default {
         realName: this.form.RealName,
         nickName: this.form.NickName,
         mobilePhone: this.form.MobilePhone,
-        sex: +this.form.Sex,
         age: +this.form.Age
       }
-      postMemberUpdate(params).then(res => {
-        if (res.StatusCode === '200') {
-          this.$message.success('成功')
-          this.dialogFormVisible = false
-          this.getList()
-        } else {
-          this.$message.error('失败')
-        }
-      })
+      if (this.form.Sex === '女' || this.form.Sex === '0') {
+        params.sex = 0
+      } else {
+        params.sex = 1
+      }
+      if (params.age < 0) {
+        this.$message.info('年龄不能小于0')
+      } else if (params.age > 150) {
+        this.$message.info('年龄不能大于150')
+      } else{
+        postMemberUpdate(params).then(res => {
+          if (res.StatusCode === '200') {
+            this.$message.success('成功')
+            this.dialogFormVisible = false
+            this.getList()
+          } else {
+            this.$message.error('失败')
+          }
+        })
+      }
     },
     // 启用
     enable(id) {
@@ -267,12 +286,16 @@ export default {
       this.gridData = val
       this.lookPermiss()
     },
-    // 重置信息
-    resetData() {
+    // 取消修改
+    resetDataChange() {
       this.dialogFormVisible = false
       this.form = {}
+    },
+    // 重置信息
+    resetData() {
       this.inputContent = ''
       this.select = '1'
+      this.getList()
     }
   }
 }

@@ -14,13 +14,11 @@
           border
           empty-text="-">
           <el-table-column
-            show-overflow-tooltip
             align="center"
             prop="CatalogName"
             label="名称">
           </el-table-column>
           <el-table-column
-            show-overflow-tooltip
             align="center"
             prop="AppCode"
             label="APPID">
@@ -266,9 +264,9 @@ export default {
     background-color: #fff;
     .menu-left {
         /deep/ .el-tree {
-            width: 200px;
+            width: 300px;
         }
-        width: 200px;
+        width: 300px;
         border-right: 1px solid #ccc;
         .menu-all {
             padding-left: 24px;

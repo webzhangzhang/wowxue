@@ -40,9 +40,8 @@ service.interceptors.response.use(
     const res = response.data
     if (res.StatusCode !== '200') {
       Message({
-        message: res.message || 'Error',
-        type: 'error',
-        duration: 5 * 1000
+        message: res.StatusMessage || 'Error',
+        type: 'error'
       })
       if (res.StatusCode === '403') {
         location.href = '#/login'
@@ -61,19 +60,17 @@ service.interceptors.response.use(
         })
       }
       console.error('res.StatusCode = ' + res.StatusCode)
-      if (res.StatusCode == 401) {
-        Message({
-          message: res.message || 'Error',
-          type: 'error'
-        })
+      if (res.StatusCode == '321' || res.StatusCode == '320') {
+      //   Message({
+      //     message: res.StatusMessage || '账号密码错误',
+      //     type: 'error'
+      //   })
                 
-        // store.dispatch('user/logout').then(() => {
-        location.reload()
+      // location.reload()
         Cookies.remove("Admin-Token")
-        return false
-        //  })
+      //   return false
       }
-      return Promise.reject(new Error(res.message || 'Error'))
+      return Promise.reject(new Error(res.StatusMessage || 'Error'))
     } else {
       return res
     }

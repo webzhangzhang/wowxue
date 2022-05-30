@@ -2,7 +2,7 @@
   <div class="login-container">
     <el-container>
       <el-aside width="200px">
-        <div class="asd-header">绘本管理系统</div>
+        <div class="asd-header">APP管理系统</div>
         <el-menu
           router
           :default-active="defaultMenu"
@@ -11,19 +11,19 @@
           class="el-menu-vertical-demo"
           @open="handleOpen"
           @close="handleClose">
-          <el-menu-item index="/activationCode" @click="getIndex()">
+          <el-menu-item index="/activationCode">
             <i class="el-icon-menu"></i>
             <span slot="title">激活码管理</span>
           </el-menu-item>
-          <el-menu-item index="/userManagement" @click="getIndex()">
+          <el-menu-item index="/userManagement">
             <i class="el-icon-s-custom"></i>
             <span slot="title">用户管理</span>
           </el-menu-item>
-          <el-menu-item index="/aiCount" @click="getIndex()">
+          <el-menu-item index="/aiCount">
             <i class="el-icon-s-marketing"></i>
             <span slot="title">语音测评</span>
           </el-menu-item>
-          <el-menu-item index="/directory" @click="getIndex()">
+          <el-menu-item index="/directory">
             <i class="el-icon-s-grid"></i>
             <span slot="title">目录管理</span>
           </el-menu-item>
@@ -70,7 +70,7 @@ export default {
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 3) {
-        callback(new Error('The password can not be less than 3 digits'))
+        callback(new Error('密码不能少于3位'))
       } else {
         callback()
       }
@@ -131,9 +131,10 @@ export default {
   },
   methods: {
     // 获取点击的侧边栏index
-    getIndex(index) {
-      this.defaultMenu = index
-    },
+    // getIndex(index) {
+    //   console.log(index)
+    //   this.defaultMenu = index
+    // },
     reload() {
       this.$store.dispatch('user/logout')
       this.$router.replace({ path: '/login' })

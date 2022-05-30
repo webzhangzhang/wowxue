@@ -98,7 +98,8 @@
         </el-form-item>
         <el-form-item label="使用有效期" :label-width="formLabelWidth">
           <div class="use">
-            <el-input class="usetime" v-model="form.validDays" autocomplete="off" type="number" width="100px"></el-input>
+            <el-input class="usetime" v-model="form.validDays" autocomplete="off" type="number" min="0" width="100px"></el-input>
+            <span style="margin-right: 10px;">天</span>
             <span class="usetimetip">使用有效期不得超过三年</span>
           </div>
         </el-form-item>
@@ -137,7 +138,7 @@
     <el-dialog title="查看列表" :visible.sync="dialogLookVisible" width="1000px">
       <el-table :data="activationCodeList">
         <el-table-column property="Id" label="序号" width="50"></el-table-column>
-        <el-table-column property="Guid" label="激活码" width="200"></el-table-column>
+        <el-table-column property="CodeNumber" label="激活码" width="200"></el-table-column>
         <el-table-column property="status" label="状态" width="100">
           <template slot-scope="scope">
             <div>
@@ -146,6 +147,7 @@
           </template>
         </el-table-column>
         <el-table-column property="UsedId" label="使用人" width="100"></el-table-column>
+        <el-table-column property="EquipmentNumber" label="设备信息" width="100"></el-table-column>
         <el-table-column label="激活时间" property="ActivationDate"></el-table-column>
         <el-table-column label="使用有效期">
           <template slot-scope="scope">
@@ -282,8 +284,7 @@ export default {
     showMulu() {
       this.CatelogDialog = true
       this.showSureBtn = true
-      this.catalogNames = []
-      this.CatelogIds = []
+      this.resetChecked()
     },
     // 点击复选框
     getId(val, num) {
@@ -301,16 +302,18 @@ export default {
     },
     // 生成激活码
     activationAdd : debounce(function() {
-      // let names = ''
-      // this.catalogNames.forEach((item, index) => {
-      //   if (index !== 0) {
-      //     names = names + ',' + item
-      //   } else {
-      //     names = item.name
-      //   }
-      // })
       if (+this.form.validDays > 1095) {
         this.$message.info('使用有效期不得超过3年')
+      } else if (+this.form.validDays < 1) {
+        this.$message.info('使用有效期不能小于1天或不能为空')
+      } else if (this.form.batchName === ''){
+        this.$message.info('激活码名称必填')
+      } else if (!this.form.codeCount) {
+        this.$message.info('数量必填')
+      } else if (this.CatelogIds.length === 0) {
+        this.$message.info('对应权限必填')
+      } else if (this.value1.length === 0) {
+        this.$message.info('有效期必填')
       } else {
         let data = {
           batchName: this.form.batchName,
@@ -328,6 +331,7 @@ export default {
             this.dialogFormVisible = false
             this.getActivationBatch()
             this.initData()
+            this.resetChecked()
           } else {
             this.$message.error('添加失败，请联系管理员')
           }
@@ -423,7 +427,6 @@ export default {
             item.ActivationEndDate = moment(item.ActivationEndDate).format('YYYY/MM/DD hh:mm:ss')
           })
           this.activationCodeList = res.Data.List
-          console.log(this.activationCodeList, '-')
           this.activationTotal = res.Data.Count
           this.dialogLookVisible = true
         }
@@ -507,6 +510,7 @@ export default {
         IsEnable: null,
       }]
       this.catalogNames = []
+      this.CatelogIds = []
       this.value1 = ''
     }
   }

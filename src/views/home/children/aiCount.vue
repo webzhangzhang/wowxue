@@ -77,6 +77,7 @@ export default {
     resetData() {
       this.inputContent = ''
       this.select = '1'
+      this.getList()
     },
     // 列表分页
     handleCurrentChange(val) {
