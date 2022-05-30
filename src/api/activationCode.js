@@ -162,6 +162,16 @@ export function getCatalogClassificationDelete(id) {
   })
 }
 
+// ---------------------语音测评----------------------
+// 获取用户列表
+export function getMemberEvaluationList(params) {
+  return request({
+    url: '/api/Member/EvaluationList',
+    method: 'get',
+    params
+  })
+}
+
 // 即需要传params，又要传data的 post
 export function getAuth(params,data) {
   return request({
