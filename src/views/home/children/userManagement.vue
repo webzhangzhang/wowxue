@@ -9,6 +9,7 @@
         </el-select>
         <el-button slot="append" icon="el-icon-search" @click="getList"></el-button>
       </el-input>
+      <el-button class="reset" @click="resetData">清空</el-button>
     </div>
     <!-- 中间表格 -->
     <el-table
@@ -62,10 +63,17 @@
           <el-input v-model="form.NickName" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="性别" :label-width="formLabelWidth">
-          <el-input v-model="form.Sex" autocomplete="off"></el-input>
+          <el-select v-model="form.Sex" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="年龄" :label-width="formLabelWidth">
-          <el-input v-model="form.Age" autocomplete="off"></el-input>
+          <el-input v-model="form.Age" type="number" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -126,7 +134,17 @@ export default {
       form: {}, // 正在修改的信息数据
       page: 1, // 当前页
       limit: 10, // 页大小
-      total: null // 用户总数，用于分页
+      total: null, // 用户总数，用于分页
+      options: [
+        {
+          value: '1',
+          label: '男'
+        }, {
+          value: '0',
+          label: '女'
+        }
+      ],
+      value: ''
     }
   },
   created() {
@@ -165,10 +183,9 @@ export default {
         realName: this.form.RealName,
         nickName: this.form.NickName,
         mobilePhone: this.form.MobilePhone,
-        sex: this.form.Sex,
+        sex: +this.form.Sex,
         age: +this.form.Age
       }
-      params.sex === '男' ? params.sex = 1 :params.sex = 0
       postMemberUpdate(params).then(res => {
         if (res.StatusCode === '200') {
           this.$message.success('成功')
@@ -254,6 +271,8 @@ export default {
     resetData() {
       this.dialogFormVisible = false
       this.form = {}
+      this.inputContent = ''
+      this.select = '1'
     }
   }
 }
@@ -262,6 +281,10 @@ export default {
     .search {
         margin-bottom: 10px;
         width: 400px;
+        display: flex;
+        .reset {
+          margin-left: 10px;
+        }
         .el-select /deep/ .el-input {
             width: 100px;
         }
